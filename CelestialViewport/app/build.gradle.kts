@@ -55,5 +55,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.gson)
     debugImplementation(libs.androidx.ui.tooling)
 }

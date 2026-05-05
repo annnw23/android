@@ -2,33 +2,17 @@ package com.celestial.viewport.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.celestial.viewport.R
 
-// NOTE: Add Space Grotesk and Manrope font files to res/font/
-// Download from Google Fonts:
-//   - space_grotesk_regular.ttf, space_grotesk_bold.ttf, space_grotesk_semibold.ttf
-//   - manrope_regular.ttf, manrope_bold.ttf, manrope_semibold.ttf, manrope_light.ttf
+// TODO (Etap 2): pobierz fonty z Google Fonts i dodaj do res/font/:
+//   Space Grotesk: space_grotesk_{light,regular,medium,semibold,bold}.ttf
+//   Manrope: manrope_{light,regular,medium,semibold,bold,extrabold}.ttf
+// Następnie zastąp FontFamily.SansSerif właściwymi definicjami Font(R.font.xxx)
 
-val SpaceGrotesk = FontFamily(
-    Font(R.font.space_grotesk_light, FontWeight.Light),
-    Font(R.font.space_grotesk_regular, FontWeight.Normal),
-    Font(R.font.space_grotesk_medium, FontWeight.Medium),
-    Font(R.font.space_grotesk_semibold, FontWeight.SemiBold),
-    Font(R.font.space_grotesk_bold, FontWeight.Bold),
-)
-
-val Manrope = FontFamily(
-    Font(R.font.manrope_light, FontWeight.Light),
-    Font(R.font.manrope_regular, FontWeight.Normal),
-    Font(R.font.manrope_medium, FontWeight.Medium),
-    Font(R.font.manrope_semibold, FontWeight.SemiBold),
-    Font(R.font.manrope_bold, FontWeight.Bold),
-    Font(R.font.manrope_extrabold, FontWeight.ExtraBold),
-)
+val SpaceGrotesk = FontFamily.SansSerif
+val Manrope = FontFamily.SansSerif
 
 val CelestialTypography = Typography(
     displayLarge = TextStyle(

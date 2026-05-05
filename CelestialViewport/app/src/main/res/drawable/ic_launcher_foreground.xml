@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- outer glow ring -->
+    <path
+        android:fillColor="#2081ECFF"
+        android:pathData="M54,54m-38,0a38,38 0,1 1,76 0a38,38 0,1 1,-76 0" />
+    <!-- inner circle -->
+    <path
+        android:fillColor="#81ECFF"
+        android:pathData="M54,54m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0" />
+    <!-- rocket body -->
+    <path
+        android:fillColor="#0C0E12"
+        android:pathData="M54,34 L60,50 L60,62 L54,66 L48,62 L48,50 Z" />
+    <!-- rocket nose -->
+    <path
+        android:fillColor="#0C0E12"
+        android:pathData="M54,28 L58,38 L50,38 Z" />
+    <!-- flame -->
+    <path
+        android:fillColor="#FFB151"
+        android:pathData="M50,66 L54,74 L58,66 Z" />
+</vector>
