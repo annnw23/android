@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.celestial.viewport"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.celestial.viewport"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "4.2.0"
     }

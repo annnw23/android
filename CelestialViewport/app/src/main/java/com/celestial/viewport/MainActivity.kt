@@ -28,14 +28,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CelestialTheme {
-                CelestialApp()
+                AppNavHost()
             }
         }
     }
 }
 
 @Composable
-fun CelestialApp() {
+fun AppNavHost() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
