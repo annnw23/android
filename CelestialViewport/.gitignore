@@ -10,7 +10,10 @@ local.properties
 .gradle/
 gradle-wrapper.jar
 
-# IDE
+# JVM heap dumps (generowane przy braku pamięci)
+*.hprof
+
+# IDE - pliki lokalne (różne na każdym komputerze)
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
@@ -18,4 +21,6 @@ gradle-wrapper.jar
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
 .DS_Store
