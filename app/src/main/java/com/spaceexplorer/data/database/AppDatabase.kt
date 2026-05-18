@@ -13,7 +13,9 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [User::class, Lesson::class, Quiz::class, QuizQuestion::class, QuizResult::class],
-    version = 1,
+    version = 2,
+    // wersja 2 → dodaliśmy kolumnę isCompleted do tabeli lessons
+    // Room wykrywa zmianę schematu i wymaga migracji lub destrukcji starej bazy
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -35,6 +37,11 @@ abstract class AppDatabase : RoomDatabase() {
                     "space_explorer_db"
                 )
                     .addCallback(PrepopulateCallback(context.applicationContext))
+                    .fallbackToDestructiveMigration()
+                    // gdy wersja bazy wzrośnie (1→2) bez podanej migracji,
+                    // Room usuwa starą bazę i tworzy nową od zera
+                    // prepopulacja uruchamia się ponownie → dane testowe wracają
+                    // w produkcji należy napisać właściwą migrację, ale dla prototypu OK
                     .build()
                     .also { INSTANCE = it }
             }
@@ -44,6 +51,18 @@ abstract class AppDatabase : RoomDatabase() {
     private class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
+            // wywoływane przy PIERWSZEJ instalacji aplikacji
+            runPopulate()
+        }
+
+        override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
+            super.onDestructiveMigration(db)
+            // wywoływane gdy wersja bazy wzrośnie i Room niszczy starą bazę
+            // (np. zmiana version = 1 → 2) — BEZ tego nadpisania baza zostaje pusta
+            runPopulate()
+        }
+
+        private fun runPopulate() {
             CoroutineScope(Dispatchers.IO).launch {
                 getInstance(context).prepopulate()
             }

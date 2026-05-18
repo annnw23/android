@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -62,10 +64,20 @@ fun BrowseScreen(
                     }
                 }
             } else {
-                items(lessons) { lesson ->
+                items(
+                    items = lessons,
+                    key = { it.id }
+                    // key = unikalny identyfikator elementu listy
+                    // Compose używa go do śledzenia które karty się przesunęły
+                    // bez key → Compose nie wie że karta "zmieniła pozycję", myśli że się zmieniła treść
+                    // z key → animuje przesunięcie karty na dół gdy oznaczona jako ukończona
+                ) { lesson ->
                     LessonCard(
                         lesson = lesson,
-                        onClick = { navController.navigate(Routes.lesson(lesson.id)) }
+                        onClick = { navController.navigate(Routes.lesson(lesson.id)) },
+                        onToggleCompleted = { viewModel.toggleCompleted(lesson) }
+                        // lambda przekazuje akcję do ViewModelu
+                        // karta nie wie jak działa zapis — tylko informuje "kliknięto toggle"
                     )
                 }
             }
@@ -74,13 +86,25 @@ fun BrowseScreen(
 }
 
 @Composable
-private fun LessonCard(lesson: Lesson, onClick: () -> Unit) {
+private fun LessonCard(
+    lesson: Lesson,
+    onClick: () -> Unit,
+    onToggleCompleted: () -> Unit
+) {
+    val completedGreen = Color(0xFF4CAF50)
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBackground),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(if (lesson.isCompleted) 0.75f else 1f),
+        colors = CardDefaults.cardColors(
+            containerColor = if (lesson.isCompleted) Color(0xFF1B3A2A) else CardBackground
+        ),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
+            // obrazek placeholder
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,20 +112,15 @@ private fun LessonCard(lesson: Lesson, onClick: () -> Unit) {
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         when (lesson.imageRes) {
-                            "solar_system" -> androidx.compose.ui.graphics.Color(0xFF1A3050)
-                            "black_hole" -> androidx.compose.ui.graphics.Color(0xFF0D0D1A)
-                            else -> androidx.compose.ui.graphics.Color(0xFF1A2030)
+                            "solar_system" -> Color(0xFF1A3050)
+                            "black_hole"   -> Color(0xFF0D0D1A)
+                            else           -> Color(0xFF1A2030)
                         }
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = when (lesson.imageRes) {
-                        "solar_system" -> "Układ Słoneczny"
-                        "black_hole" -> "Czarna Dziura"
-                        "moon" -> "Księżyc"
-                        else -> lesson.title
-                    },
+                    text = lesson.title,
                     color = SecondaryText,
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -109,6 +128,7 @@ private fun LessonCard(lesson: Lesson, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // tytuł
             Text(
                 text = lesson.title,
                 style = MaterialTheme.typography.titleMedium,
@@ -118,6 +138,7 @@ private fun LessonCard(lesson: Lesson, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            // opis
             Text(
                 text = lesson.description.take(80) + "...",
                 style = MaterialTheme.typography.bodySmall,
@@ -127,12 +148,41 @@ private fun LessonCard(lesson: Lesson, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // CHECKBOX — wyraźny wiersz na dole karty
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = lesson.isCompleted,
+                    onCheckedChange = { onToggleCompleted() },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = completedGreen,
+                        uncheckedColor = SecondaryText,
+                        checkmarkColor = Color.White
+                    )
+                )
+                Text(
+                    text = if (lesson.isCompleted) "Ukonczona" else "Oznacz jako ukonczona",
+                    color = if (lesson.isCompleted) completedGreen else SecondaryText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (lesson.isCompleted) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // przycisk
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = CyanAccent),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Dowiedz się więcej", color = androidx.compose.ui.graphics.Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Dowiedz sie wiecej",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

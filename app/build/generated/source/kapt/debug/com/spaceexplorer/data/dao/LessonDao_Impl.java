@@ -8,6 +8,7 @@ import androidx.room.CoroutinesRoom;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
+import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlinx.coroutines.flow.Flow;
 
@@ -32,13 +34,15 @@ public final class LessonDao_Impl implements LessonDao {
 
   private final EntityInsertionAdapter<Lesson> __insertionAdapterOfLesson;
 
+  private final SharedSQLiteStatement __preparedStmtOfUpdateCompletedStatus;
+
   public LessonDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfLesson = new EntityInsertionAdapter<Lesson>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `lessons` (`id`,`title`,`description`,`imageRes`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR ABORT INTO `lessons` (`id`,`title`,`description`,`imageRes`,`isCompleted`) VALUES (nullif(?, 0),?,?,?,?)";
       }
 
       @Override
@@ -60,12 +64,22 @@ public final class LessonDao_Impl implements LessonDao {
         } else {
           statement.bindString(4, entity.getImageRes());
         }
+        final int _tmp = entity.isCompleted() ? 1 : 0;
+        statement.bindLong(5, _tmp);
+      }
+    };
+    this.__preparedStmtOfUpdateCompletedStatus = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "UPDATE lessons SET isCompleted = ? WHERE id = ?";
+        return _query;
       }
     };
   }
 
   @Override
-  public Object insert(final Lesson lesson, final Continuation<? super Long> $completion) {
+  public Object insert(final Lesson lesson, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -79,12 +93,41 @@ public final class LessonDao_Impl implements LessonDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
+  }
+
+  @Override
+  public Object updateCompletedStatus(final int lessonId, final boolean isCompleted,
+      final Continuation<? super Unit> arg2) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfUpdateCompletedStatus.acquire();
+        int _argIndex = 1;
+        final int _tmp = isCompleted ? 1 : 0;
+        _stmt.bindLong(_argIndex, _tmp);
+        _argIndex = 2;
+        _stmt.bindLong(_argIndex, lessonId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfUpdateCompletedStatus.release(_stmt);
+        }
+      }
+    }, arg2);
   }
 
   @Override
   public Flow<List<Lesson>> getAllLessons() {
-    final String _sql = "SELECT * FROM lessons";
+    final String _sql = "SELECT * FROM lessons ORDER BY isCompleted ASC, id ASC";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     return CoroutinesRoom.createFlow(__db, false, new String[] {"lessons"}, new Callable<List<Lesson>>() {
       @Override
@@ -96,6 +139,7 @@ public final class LessonDao_Impl implements LessonDao {
           final int _cursorIndexOfTitle = CursorUtil.getColumnIndexOrThrow(_cursor, "title");
           final int _cursorIndexOfDescription = CursorUtil.getColumnIndexOrThrow(_cursor, "description");
           final int _cursorIndexOfImageRes = CursorUtil.getColumnIndexOrThrow(_cursor, "imageRes");
+          final int _cursorIndexOfIsCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "isCompleted");
           final List<Lesson> _result = new ArrayList<Lesson>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final Lesson _item;
@@ -119,7 +163,11 @@ public final class LessonDao_Impl implements LessonDao {
             } else {
               _tmpImageRes = _cursor.getString(_cursorIndexOfImageRes);
             }
-            _item = new Lesson(_tmpId,_tmpTitle,_tmpDescription,_tmpImageRes);
+            final boolean _tmpIsCompleted;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfIsCompleted);
+            _tmpIsCompleted = _tmp != 0;
+            _item = new Lesson(_tmpId,_tmpTitle,_tmpDescription,_tmpImageRes,_tmpIsCompleted);
             _result.add(_item);
           }
           return _result;
@@ -136,7 +184,7 @@ public final class LessonDao_Impl implements LessonDao {
   }
 
   @Override
-  public Object getLessonById(final int id, final Continuation<? super Lesson> $completion) {
+  public Object getLessonById(final int id, final Continuation<? super Lesson> arg1) {
     final String _sql = "SELECT * FROM lessons WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -152,6 +200,7 @@ public final class LessonDao_Impl implements LessonDao {
           final int _cursorIndexOfTitle = CursorUtil.getColumnIndexOrThrow(_cursor, "title");
           final int _cursorIndexOfDescription = CursorUtil.getColumnIndexOrThrow(_cursor, "description");
           final int _cursorIndexOfImageRes = CursorUtil.getColumnIndexOrThrow(_cursor, "imageRes");
+          final int _cursorIndexOfIsCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "isCompleted");
           final Lesson _result;
           if (_cursor.moveToFirst()) {
             final int _tmpId;
@@ -174,7 +223,11 @@ public final class LessonDao_Impl implements LessonDao {
             } else {
               _tmpImageRes = _cursor.getString(_cursorIndexOfImageRes);
             }
-            _result = new Lesson(_tmpId,_tmpTitle,_tmpDescription,_tmpImageRes);
+            final boolean _tmpIsCompleted;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfIsCompleted);
+            _tmpIsCompleted = _tmp != 0;
+            _result = new Lesson(_tmpId,_tmpTitle,_tmpDescription,_tmpImageRes,_tmpIsCompleted);
           } else {
             _result = null;
           }
@@ -184,7 +237,7 @@ public final class LessonDao_Impl implements LessonDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @NonNull

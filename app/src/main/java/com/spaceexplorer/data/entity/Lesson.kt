@@ -8,5 +8,8 @@ data class Lesson(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val description: String,
-    val imageRes: String
+    val imageRes: String,
+    val isCompleted: Boolean = false
+    // false = lekcja nieukończona (domyślnie)
+    // Room przechowuje Boolean jako INTEGER: 0 = false, 1 = true
 )

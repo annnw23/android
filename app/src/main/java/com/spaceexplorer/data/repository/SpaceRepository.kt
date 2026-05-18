@@ -14,6 +14,12 @@ class SpaceRepository(private val db: AppDatabase) {
 
     suspend fun getLessonById(id: Int) = db.lessonDao().getLessonById(id)
 
+    suspend fun toggleLessonCompleted(lessonId: Int, isCompleted: Boolean) {
+        // repozytorium deleguje do DAO — ViewModel nie wie jak dokładnie
+        // dane są zapisywane (mogłoby to być API zamiast Room)
+        db.lessonDao().updateCompletedStatus(lessonId, isCompleted)
+    }
+
     suspend fun getQuizByLessonId(lessonId: Int): Quiz? = db.quizDao().getQuizByLessonId(lessonId)
 
     suspend fun getQuizById(id: Int): Quiz? = db.quizDao().getQuizById(id)

@@ -56,7 +56,7 @@ public final class QuizDao_Impl implements QuizDao {
   }
 
   @Override
-  public Object insert(final Quiz quiz, final Continuation<? super Long> $completion) {
+  public Object insert(final Quiz quiz, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -70,12 +70,11 @@ public final class QuizDao_Impl implements QuizDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object getQuizByLessonId(final int lessonId,
-      final Continuation<? super Quiz> $completion) {
+  public Object getQuizByLessonId(final int lessonId, final Continuation<? super Quiz> arg1) {
     final String _sql = "SELECT * FROM quizzes WHERE lessonId = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -118,11 +117,11 @@ public final class QuizDao_Impl implements QuizDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object getQuizById(final int id, final Continuation<? super Quiz> $completion) {
+  public Object getQuizById(final int id, final Continuation<? super Quiz> arg1) {
     final String _sql = "SELECT * FROM quizzes WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -165,7 +164,7 @@ public final class QuizDao_Impl implements QuizDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @NonNull
