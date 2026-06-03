@@ -4,7 +4,7 @@ object Routes {
     const val WELCOME = "welcome"
     const val BROWSE = "browse"
     const val LEADERBOARD = "leaderboard"
-    const val PROFILE = "profile"
+    const val GALLERY = "gallery"
 
     const val LESSON = "lesson/{lessonId}"
     const val QUIZ = "quiz/{quizId}"

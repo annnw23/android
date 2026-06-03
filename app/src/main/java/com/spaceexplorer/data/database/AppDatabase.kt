@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [User::class, Lesson::class, Quiz::class, QuizQuestion::class, QuizResult::class],
-    version = 2,
-    // wersja 2 → dodaliśmy kolumnę isCompleted do tabeli lessons
-    // Room wykrywa zmianę schematu i wymaga migracji lub destrukcji starej bazy
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -38,10 +36,6 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                     .addCallback(PrepopulateCallback(context.applicationContext))
                     .fallbackToDestructiveMigration()
-                    // gdy wersja bazy wzrośnie (1→2) bez podanej migracji,
-                    // Room usuwa starą bazę i tworzy nową od zera
-                    // prepopulacja uruchamia się ponownie → dane testowe wracają
-                    // w produkcji należy napisać właściwą migrację, ale dla prototypu OK
                     .build()
                     .also { INSTANCE = it }
             }
@@ -51,14 +45,11 @@ abstract class AppDatabase : RoomDatabase() {
     private class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            // wywoływane przy PIERWSZEJ instalacji aplikacji
             runPopulate()
         }
 
         override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
             super.onDestructiveMigration(db)
-            // wywoływane gdy wersja bazy wzrośnie i Room niszczy starą bazę
-            // (np. zmiana version = 1 → 2) — BEZ tego nadpisania baza zostaje pusta
             runPopulate()
         }
 
@@ -74,7 +65,8 @@ abstract class AppDatabase : RoomDatabase() {
             Lesson(
                 title = "Układ Słoneczny",
                 description = "Nasz układ słoneczny składa się ze Słońca oraz ośmiu planet: Merkurego, Wenus, Ziemi, Marsa, Jowisza, Saturna, Urana i Neptuna. Słońce zawiera 99,86% całej masy układu. Planety krążą wokół Słońca po eliptycznych orbitach. Jowisz jest największą planetą – jego masa jest większa niż wszystkich pozostałych planet razem wziętych. Poza planetami układ zawiera setki księżyców, miliony asteroid oraz komety.",
-                imageRes = "solar_system"
+                // High-quality composite image from NASA
+                imageRes = "images-assets.nasa.gov/image/PIA03604/PIA03604~orig.jpg"
             )
         ).toInt()
 
@@ -82,7 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
             Lesson(
                 title = "Czarne Dziury",
                 description = "Czarne dziury to regiony przestrzeni, w których grawitacja jest tak silna, że nic – nawet światło – nie może ich opuścić. Powstają zazwyczaj po eksplozji supernowej masywnej gwiazdy. Granicę czarnej dziury nazywamy horyzontem zdarzeń. Istnienie czarnych dziur przewidział Albert Einstein w ramach ogólnej teorii względności. Stephen Hawking odkrył, że czarne dziury emitują promieniowanie termiczne (promieniowanie Hawkinga). W centrum naszej galaktyki Drogi Mlecznej znajduje się supermasywna czarna dziura Sagittarius A*.",
-                imageRes = "black_hole"
+                imageRes = "https://images-assets.nasa.gov/image/PIA23122/PIA23122~medium.jpg"
             )
         ).toInt()
 
@@ -90,7 +82,7 @@ abstract class AppDatabase : RoomDatabase() {
             Lesson(
                 title = "Księżyc",
                 description = "Księżyc jest jedynym naturalnym satelitą Ziemi i piątym co do wielkości księżycem w Układzie Słonecznym. Odległość od Ziemi wynosi średnio 384 400 km. Księżyc wpływa na pływy morskie oraz stabilizuje oś obrotu Ziemi. Jeden pełny obieg wokół Ziemi trwa około 27,3 doby. Neil Armstrong jako pierwszy człowiek postawił stopę na Księżycu 20 lipca 1969 roku podczas misji Apollo 11. Księżyc nie ma atmosfery ani aktywności wulkanicznej.",
-                imageRes = "moon"
+                imageRes = "https://images-assets.nasa.gov/image/as11-44-6551/as11-44-6551~medium.jpg"
             )
         ).toInt()
 

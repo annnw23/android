@@ -54,8 +54,8 @@ fun NavGraph(navController: NavHostController) {
             LeaderboardScreen(navController = navController)
         }
 
-        composable(Routes.PROFILE) {
-            ProfileScreen(navController = navController)
+        composable(Routes.GALLERY) {
+            GalleryScreen(navController = navController)
         }
     }
 }

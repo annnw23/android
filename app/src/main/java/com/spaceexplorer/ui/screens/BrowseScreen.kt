@@ -1,13 +1,14 @@
 package com.spaceexplorer.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import com.spaceexplorer.data.entity.Lesson
 import com.spaceexplorer.navigation.Routes
 import com.spaceexplorer.ui.theme.*
@@ -67,17 +70,11 @@ fun BrowseScreen(
                 items(
                     items = lessons,
                     key = { it.id }
-                    // key = unikalny identyfikator elementu listy
-                    // Compose używa go do śledzenia które karty się przesunęły
-                    // bez key → Compose nie wie że karta "zmieniła pozycję", myśli że się zmieniła treść
-                    // z key → animuje przesunięcie karty na dół gdy oznaczona jako ukończona
                 ) { lesson ->
                     LessonCard(
                         lesson = lesson,
                         onClick = { navController.navigate(Routes.lesson(lesson.id)) },
                         onToggleCompleted = { viewModel.toggleCompleted(lesson) }
-                        // lambda przekazuje akcję do ViewModelu
-                        // karta nie wie jak działa zapis — tylko informuje "kliknięto toggle"
                     )
                 }
             }
@@ -96,7 +93,8 @@ private fun LessonCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .alpha(if (lesson.isCompleted) 0.75f else 1f),
+            .alpha(if (lesson.isCompleted) 0.75f else 1f)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = if (lesson.isCompleted) Color(0xFF1B3A2A) else CardBackground
         ),
@@ -104,27 +102,17 @@ private fun LessonCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
-            // obrazek placeholder
-            Box(
+            // Obrazek z URL (NASA API/Archive)
+            AsyncImage(
+                model = lesson.imageRes,
+                contentDescription = lesson.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        when (lesson.imageRes) {
-                            "solar_system" -> Color(0xFF1A3050)
-                            "black_hole"   -> Color(0xFF0D0D1A)
-                            else           -> Color(0xFF1A2030)
-                        }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = lesson.title,
-                    color = SecondaryText,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
+                    .height(150.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -140,7 +128,7 @@ private fun LessonCard(
 
             // opis
             Text(
-                text = lesson.description.take(80) + "...",
+                text = if (lesson.description.length > 80) lesson.description.take(80) + "..." else lesson.description,
                 style = MaterialTheme.typography.bodySmall,
                 color = SecondaryText,
                 maxLines = 2
@@ -148,7 +136,7 @@ private fun LessonCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // CHECKBOX — wyraźny wiersz na dole karty
+            // CHECKBOX
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -163,25 +151,10 @@ private fun LessonCard(
                     )
                 )
                 Text(
-                    text = if (lesson.isCompleted) "Ukonczona" else "Oznacz jako ukonczona",
+                    text = if (lesson.isCompleted) "Ukończona" else "Oznacz jako ukończona",
                     color = if (lesson.isCompleted) completedGreen else SecondaryText,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = if (lesson.isCompleted) FontWeight.Bold else FontWeight.Normal
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // przycisk
-            Button(
-                onClick = onClick,
-                colors = ButtonDefaults.buttonColors(containerColor = CyanAccent),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Dowiedz sie wiecej",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -231,12 +204,12 @@ fun SpaceBottomNav(navController: NavController) {
             )
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.Person, contentDescription = "Profil") },
-            label = { Text("Profil") },
-            selected = currentRoute == Routes.PROFILE,
+            icon = { Icon(Icons.Default.PhotoLibrary, contentDescription = "Galeria") },
+            label = { Text("Galeria") },
+            selected = currentRoute == Routes.GALLERY,
             onClick = {
-                if (currentRoute != Routes.PROFILE) {
-                    navController.navigate(Routes.PROFILE)
+                if (currentRoute != Routes.GALLERY) {
+                    navController.navigate(Routes.GALLERY)
                 }
             },
             colors = NavigationBarItemDefaults.colors(

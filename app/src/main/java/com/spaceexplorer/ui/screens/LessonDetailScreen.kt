@@ -16,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.spaceexplorer.navigation.Routes
 import com.spaceexplorer.ui.theme.*
 import com.spaceexplorer.ui.viewmodel.LessonViewModel
@@ -74,29 +76,15 @@ fun LessonDetailScreen(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
+            // Header Image from NASA
+            AsyncImage(
+                model = uiState.lesson?.imageRes,
+                contentDescription = uiState.lesson?.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = when (uiState.lesson?.imageRes) {
-                                "solar_system" -> listOf(Color(0xFF1A3A6A), Color(0xFF0A1A30))
-                                "black_hole" -> listOf(Color(0xFF0D0010), Color(0xFF1A0030))
-                                "moon" -> listOf(Color(0xFF202840), Color(0xFF0A0E1A))
-                                else -> listOf(SurfaceColor, DarkBackground)
-                            }
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = uiState.lesson?.title ?: "",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = PrimaryText.copy(alpha = 0.3f),
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                    .height(250.dp),
+                contentScale = ContentScale.Crop
+            )
 
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
