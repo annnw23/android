@@ -79,7 +79,7 @@ public final class LessonDao_Impl implements LessonDao {
   }
 
   @Override
-  public Object insert(final Lesson lesson, final Continuation<? super Long> arg1) {
+  public Object insert(final Lesson lesson, final Continuation<? super Long> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -93,12 +93,12 @@ public final class LessonDao_Impl implements LessonDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
   public Object updateCompletedStatus(final int lessonId, final boolean isCompleted,
-      final Continuation<? super Unit> arg2) {
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -122,7 +122,7 @@ public final class LessonDao_Impl implements LessonDao {
           __preparedStmtOfUpdateCompletedStatus.release(_stmt);
         }
       }
-    }, arg2);
+    }, $completion);
   }
 
   @Override
@@ -184,7 +184,7 @@ public final class LessonDao_Impl implements LessonDao {
   }
 
   @Override
-  public Object getLessonById(final int id, final Continuation<? super Lesson> arg1) {
+  public Object getLessonById(final int id, final Continuation<? super Lesson> $completion) {
     final String _sql = "SELECT * FROM lessons WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -237,7 +237,7 @@ public final class LessonDao_Impl implements LessonDao {
           _statement.release();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @NonNull

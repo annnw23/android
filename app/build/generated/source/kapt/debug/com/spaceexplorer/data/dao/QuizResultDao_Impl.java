@@ -52,7 +52,7 @@ public final class QuizResultDao_Impl implements QuizResultDao {
   }
 
   @Override
-  public Object insert(final QuizResult result, final Continuation<? super Long> arg1) {
+  public Object insert(final QuizResult result, final Continuation<? super Long> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -66,7 +66,7 @@ public final class QuizResultDao_Impl implements QuizResultDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override

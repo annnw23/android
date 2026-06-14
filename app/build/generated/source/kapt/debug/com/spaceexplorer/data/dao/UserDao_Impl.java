@@ -53,7 +53,7 @@ public final class UserDao_Impl implements UserDao {
   }
 
   @Override
-  public Object insert(final User user, final Continuation<? super Long> arg1) {
+  public Object insert(final User user, final Continuation<? super Long> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -67,11 +67,11 @@ public final class UserDao_Impl implements UserDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
-  public Object getUserById(final int id, final Continuation<? super User> arg1) {
+  public Object getUserById(final int id, final Continuation<? super User> $completion) {
     final String _sql = "SELECT * FROM users WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -105,11 +105,12 @@ public final class UserDao_Impl implements UserDao {
           _statement.release();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
-  public Object getUserByUsername(final String username, final Continuation<? super User> arg1) {
+  public Object getUserByUsername(final String username,
+      final Continuation<? super User> $completion) {
     final String _sql = "SELECT * FROM users WHERE username = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -147,7 +148,7 @@ public final class UserDao_Impl implements UserDao {
           _statement.release();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @NonNull

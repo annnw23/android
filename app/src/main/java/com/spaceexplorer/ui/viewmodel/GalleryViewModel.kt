@@ -1,5 +1,6 @@
 package com.spaceexplorer.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ class GalleryViewModel : ViewModel() {
     val uiState: StateFlow<GalleryUiState> = _uiState.asStateFlow()
 
     init {
+        Log.d("GalleryViewModel", "Initializing GalleryViewModel")
         loadImages()
     }
 
@@ -37,6 +39,7 @@ class GalleryViewModel : ViewModel() {
             "https://images-assets.nasa.gov/image/PIA03654/PIA03654~thumb.jpg",
             "https://images-assets.nasa.gov/image/PIA04921/PIA04921~thumb.jpg"
         )
+        Log.d("GalleryViewModel", "Loaded ${nasaImages.size} images")
         _uiState.value = GalleryUiState(imageUrls = nasaImages)
     }
 

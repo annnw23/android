@@ -1,18 +1,22 @@
 [
     {
-        "merged": "com.spaceexplorer.app-merged_res-58:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.spaceexplorer.app-main-60:/drawable/ic_launcher_background.xml"
+        "merged": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-merged_res-58:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-main-60:\\drawable\\ic_launcher_background.xml"
     },
     {
-        "merged": "com.spaceexplorer.app-merged_res-58:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.spaceexplorer.app-main-60:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-merged_res-58:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-main-60:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "com.spaceexplorer.app-merged_res-58:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.spaceexplorer.app-main-60:/drawable/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-merged_res-58:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-main-60:\\drawable\\ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.spaceexplorer.app-merged_res-58:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.spaceexplorer.app-main-60:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-merged_res-58:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\mykal\\.gradle\\daemon\\8.6\\com.spaceexplorer.app-main-60:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.spaceexplorer.app-merged_res-58:/xml_network_security_config.xml.flat",
+        "source": "com.spaceexplorer.app-main-60:/xml/network_security_config.xml"
     }
 ]

@@ -1,5 +1,6 @@
 package com.spaceexplorer.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Star
@@ -18,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,10 +31,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.spaceexplorer.data.entity.Lesson
 import com.spaceexplorer.navigation.Routes
 import com.spaceexplorer.ui.theme.*
 import com.spaceexplorer.ui.viewmodel.BrowseViewModel
+
+private const val NASA_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,6 +97,7 @@ private fun LessonCard(
     onToggleCompleted: () -> Unit
 ) {
     val completedGreen = Color(0xFF4CAF50)
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -102,17 +111,28 @@ private fun LessonCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
-            // Obrazek z URL (NASA API/Archive)
-            AsyncImage(
-                model = lesson.imageRes,
-                contentDescription = lesson.title,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(lesson.imageRes)
+                        .addHeader("User-Agent", NASA_USER_AGENT)
+                        .crossfade(true)
+                        .allowHardware(false)
+                        .build(),
+                    contentDescription = lesson.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    error = rememberVectorPainter(Icons.Default.BrokenImage),
+                    placeholder = rememberVectorPainter(Icons.Default.CloudOff)
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 

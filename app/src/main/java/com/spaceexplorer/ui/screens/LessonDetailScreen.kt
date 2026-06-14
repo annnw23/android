@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,16 +17,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.spaceexplorer.navigation.Routes
 import com.spaceexplorer.ui.theme.*
 import com.spaceexplorer.ui.viewmodel.LessonViewModel
+
+private const val NASA_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +45,7 @@ fun LessonDetailScreen(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -76,14 +83,20 @@ fun LessonDetailScreen(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Header Image from NASA
+            // Header Image from NASA with User-Agent
             AsyncImage(
-                model = uiState.lesson?.imageRes,
+                model = ImageRequest.Builder(context)
+                    .data(uiState.lesson?.imageRes)
+                    .addHeader("User-Agent", NASA_USER_AGENT)
+                    .crossfade(true)
+                    .allowHardware(false)
+                    .build(),
                 contentDescription = uiState.lesson?.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                error = rememberVectorPainter(Icons.Default.BrokenImage)
             )
 
             Column(modifier = Modifier.padding(16.dp)) {

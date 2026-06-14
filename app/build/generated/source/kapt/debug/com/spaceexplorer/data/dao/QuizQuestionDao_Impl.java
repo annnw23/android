@@ -61,7 +61,7 @@ public final class QuizQuestionDao_Impl implements QuizQuestionDao {
 
   @Override
   public Object insertAll(final List<QuizQuestion> questions,
-      final Continuation<? super Unit> arg1) {
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -75,12 +75,12 @@ public final class QuizQuestionDao_Impl implements QuizQuestionDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
   public Object getQuestionsByQuizId(final int quizId,
-      final Continuation<? super List<QuizQuestion>> arg1) {
+      final Continuation<? super List<QuizQuestion>> $completion) {
     final String _sql = "SELECT * FROM quiz_questions WHERE quizId = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -127,7 +127,7 @@ public final class QuizQuestionDao_Impl implements QuizQuestionDao {
           _statement.release();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @NonNull
